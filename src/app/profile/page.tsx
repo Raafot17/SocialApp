@@ -198,7 +198,7 @@ async function profilePhoto(e: React.ChangeEvent<HTMLInputElement>) {
       </Grid>
     </Grid>
 
-    {/* ✅ Tabs Navigation   */}
+    {/* ✅ Tabs Navigation زي  */}
     <Tabs
       value={selectedTab}
       onChange={(_, newValue) => setSelectedTab(newValue)}
