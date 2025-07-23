@@ -58,7 +58,6 @@ async function profilePhoto(e: React.ChangeEvent<HTMLInputElement>) {
     );
 
     let data = await response.json();
-    console.log("✅ Uploaded:", data);
 
     if (data?.message === "success") {
       toast.success("✅ Profile photo updated!");
@@ -70,7 +69,6 @@ async function profilePhoto(e: React.ChangeEvent<HTMLInputElement>) {
     }
 
   } catch (err) {
-    console.error("❌ Upload error:", err);
     toast.error("Upload failed");
   }
 }

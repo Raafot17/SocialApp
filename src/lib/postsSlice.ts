@@ -48,8 +48,8 @@ export const UserData = createAsyncThunk("postsSlice/UserData", async () => {
       token: localStorage.getItem("token"),
     },
   });
-  return res;
-  // console.log(res);
+  return res.data;
+
   
 });
 
@@ -69,6 +69,7 @@ const postsSlice = createSlice({
 
 builder.addCase(getuserPosts.fulfilled, (state, action) => {
   state.userPosts = action.payload.posts;
+  
 });
 builder.addCase(UserData.fulfilled, (state, action) => {
   state.userdata = action.payload.data.user;

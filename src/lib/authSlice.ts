@@ -92,7 +92,7 @@ let authSlice = createSlice({
 
   
  builder.addCase(Regester.rejected, (state, action) => {
-  state.isError = (action.payload as string) || "si Failed";
+  state.isError = (action.payload as string) || "sign Failed";
   state.isloading = false;
 });
   },
