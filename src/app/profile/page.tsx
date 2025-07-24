@@ -20,65 +20,80 @@ import {
 } from "@mui/material";
 import CreatePost from "../CreatePost/page";
 import { toast } from "sonner";
-
 type MyJwtPayload = {
   user: string;
 };
 
 export default function Profile() {
   const dispatch = useDispatch<typeof store.dispatch>();
-
-  // ✅ نجيب التوكن ونفك الداتا منه
-  const token = localStorage.getItem("token");
-  const x = jwtDecode<MyJwtPayload>(`${token}`);
-
-  const { userPosts ,userdata } = useSelector(
+  const { userPosts, userdata } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.posts
   );
 
   const [selectedTab, setSelectedTab] = useState(0);
+  const [userId, setUserId] = useState<string | null>(null);
 
-async function profilePhoto(e: React.ChangeEvent<HTMLInputElement>) {
-  let file = e.target.files?.[0];
-  if (!file) return;
+  async function profilePhoto(e: React.ChangeEvent<HTMLInputElement>) {
+    let file = e.target.files?.[0];
+    if (!file) return;
 
-  let formData = new FormData();
-  formData.append("photo", file);
+    let formData = new FormData();
+    formData.append("photo", file);
 
-  try {
-    let response = await fetch(
-      "https://linked-posts.routemisr.com/users/upload-photo",
-      {
-        method: "PUT",
-        body: formData,
-        headers: {
-          token: `${localStorage.getItem("token") || ""}`
+    try {
+      let response = await fetch(
+        "https://linked-posts.routemisr.com/users/upload-photo",
+        {
+          method: "PUT",
+          body: formData,
+          headers: {
+            token: typeof window !== "undefined" ? localStorage.getItem("token") || "" : "",
+          },
         }
+      );
+
+      let data = await response.json();
+
+      if (data?.message === "success") {
+        toast.success("✅ Profile photo updated!");
+        dispatch(UserData());
+      } else {
+        toast.error(data?.message || "Failed to upload photo");
       }
-    );
-
-    let data = await response.json();
-
-    if (data?.message === "success") {
-      toast.success("✅ Profile photo updated!");
-      
-      // ✅ هنا بنرجع نجيب بيانات المستخدم الجديدة
-      dispatch(UserData());
-    } else {
-      toast.error(data?.message || "Failed to upload photo");
+    } catch (err) {
+      toast.error("Upload failed");
     }
-
-  } catch (err) {
-    toast.error("Upload failed");
   }
-}
+useEffect(() => {
+  if (typeof window !== "undefined") {
+    const token = localStorage.getItem("token");
 
+    if (token) {
+      try {
+        const decoded = jwtDecode<MyJwtPayload>(token);
 
+        if (decoded && typeof decoded === "object" && "user" in decoded) {
+          setUserId((decoded as MyJwtPayload).user);
+        } else {
+          console.warn("✅ Token decoded but no user field found");
+        }
+      } catch (err) {
+        console.error("❌ Invalid token:", err);
+      }
+    } else {
+      console.warn("⚠️ No token found in localStorage");
+    }
+  }
+}, []);
 
   useEffect(() => {
-    if (x?.user) dispatch(getuserPosts(x.user));
-    dispatch(UserData())
-  }, []);
+    if (userId) {
+      dispatch(getuserPosts(userId));
+      dispatch(UserData());
+    }
+  }, [userId]);
+
+ 
 
   return <>
 <Box

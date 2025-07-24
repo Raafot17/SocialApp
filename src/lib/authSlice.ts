@@ -40,6 +40,7 @@ export const Regester = createAsyncThunk(
         formData
       );
       return res.data;
+      
     } catch (err: any) {
       let errorMessage =
         err?.response?.data?.error || err?.message || "Signup failed";
@@ -83,7 +84,9 @@ let authSlice = createSlice({
     // ✅ Regester (signup)
     builder.addCase(Regester.fulfilled, (state, action) => {
       state.isloading = false;
-      state.userData = action.payload.user || null; // ✅ بس بيانات اليوزر
+      state.userData = action.payload || null; // ✅ بس بيانات اليوزر
+      console.log(action.payload);
+      
     });
 
     builder.addCase(Regester.pending, (state) => {

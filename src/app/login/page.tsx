@@ -18,10 +18,8 @@ export default function Login() {
       password: "",
     },
     onSubmit: (values) => {
-      console.log(values);
       dispatch(userLogin(values))
         .then((res) => {
-          console.log(res.payload);
           if (res.payload.message == "success") {
             localStorage.setItem("token", res.payload.token);
             router.push("/");

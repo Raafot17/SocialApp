@@ -37,10 +37,11 @@ export default function Register() {
    onSubmit: (values) => {
 
   dispatch(Regester(values))
+  
     .then((res) => {
 
       if (res.payload.message === "success") {
-        router.push("/login");
+        router.push("login");
       } else {
         toast.error(res.payload || "Signup Failed!");
       }
