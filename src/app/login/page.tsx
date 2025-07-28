@@ -74,7 +74,7 @@ export default function Login() {
               id="email"
               label="Email"
               variant="outlined"
-              InputLabelProps={{ style: { color: "#ddd" } }}
+              InputLabelProps={{ style: { color: "gray" } }}
               InputProps={{
                 style: {
                   backgroundColor: "rgba(255,255,255,0.9)",
@@ -91,7 +91,7 @@ export default function Login() {
               label="Password"
               variant="outlined"
               type="password"
-              InputLabelProps={{ style: { color: "#ddd" } }}
+              InputLabelProps={{ style: { color: "gray" } }}
               InputProps={{
                 style: {
                   backgroundColor: "rgba(255,255,255,0.9)",
@@ -143,15 +143,7 @@ export default function Login() {
               </Link>
             </Typography>
 
-            <Typography>
-              <Link
-                href="/forgot-password"
-                underline="hover"
-                sx={{ cursor: "pointer", color: "#6dd5ed", fontWeight: "bold" }}
-              >
-                Forgot password?
-              </Link>
-            </Typography>
+          
           </Box>
         </Paper>
       </Container>

@@ -30,12 +30,25 @@ import SendIcon from "@mui/icons-material/Send";
 import { PostType } from "@/app/_interfaces/home";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
+import { UserData } from "@/lib/postsSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { store } from "@/lib/store";
+import  { useEffect } from "react";
+
+
 
 export default function FacebookPost({ postObject }: { postObject: PostType }) {
   const [comments, setComments] = React.useState([]);
   const [loadingComments, setLoadingComments] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [loadingDelete, setLoadingDelete] = React.useState(false);
+
+
+const dispatch = useDispatch<typeof store.dispatch>();
+  const {  userdata } = useSelector(
+    (state: ReturnType<typeof store.getState>) => state.posts
+  );
+
 
   // ✅ State لتعديل البوست
   const [openEdit, setOpenEdit] = React.useState(false);
@@ -88,6 +101,30 @@ export default function FacebookPost({ postObject }: { postObject: PostType }) {
     try {
       const res = await fetch(
         `https://linked-posts.routemisr.com/posts/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            token: localStorage.getItem("token") || "",
+          },
+        }
+      );
+      const data = await res.json();
+      if (data.message === "success") {
+        router.refresh();
+      }
+    } catch (error) {
+      console.error("Delete error:", error);
+    } finally {
+      setLoadingDelete(false);
+      handleMenuClose();
+    }
+  }
+  async function handleDeletecomment(id: string) {
+    if (!confirm("Are you sure you want to delete this comment?")) return;
+    setLoadingDelete(true);
+    try {
+      const res = await fetch(
+        `https://linked-posts.routemisr.com/comments/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -172,6 +209,11 @@ export default function FacebookPost({ postObject }: { postObject: PostType }) {
     fetchComments();
   }
 
+
+  useEffect(() => {
+    dispatch(UserData())
+  }, [])
+  
   return (
     <>
       <Card
@@ -263,7 +305,7 @@ export default function FacebookPost({ postObject }: { postObject: PostType }) {
 
         <Divider />
 
-        {/* ✅ أزرار Like - Comment - Share */}
+        {/*  أزرار Like - Comment - Share */}
         <CardActions
           sx={{
             display: "flex",
@@ -304,7 +346,7 @@ export default function FacebookPost({ postObject }: { postObject: PostType }) {
             {/* ✅ إضافة كومنت */}
             <form onSubmit={handleComment} style={{ display: "flex", gap: 8 }}>
               <Avatar
-                src={postObject.user.photo}
+                src={userdata?.photo}
                 sx={{ width: 35, height: 35 }}
               />
               <TextField
@@ -329,39 +371,66 @@ export default function FacebookPost({ postObject }: { postObject: PostType }) {
                 <CircularProgress size={24} />
               </Box>
             ) : comments.length > 0 ? (
-              comments.map((c: any) => (
-                <Box key={c._id} sx={{ display: "flex", gap: 1, mt: 2 }}>
-                  <Avatar
-                    src={c.commentCreator.photo}
-                    sx={{ width: 35, height: 35, cursor: "pointer" }}
-                    onClick={() => handleNavigate(c.commentCreator._id)}
-                  />
-                  <Box
-                    sx={{
-                      bgcolor: "#f0f2f5",
-                      p: 1.2,
-                      borderRadius: "12px",
-                      flex: 1,
-                    }}
-                  >
-                    <Typography
-                      sx={{
-                        fontWeight: "bold",
-                        fontSize: 14,
-                        cursor: "pointer",
-                        "&:hover": { textDecoration: "underline" },
-                      }}
-                      onClick={() => handleNavigate(c.commentCreator._id)}
-                    >
-                      {c.commentCreator.name}
-                    </Typography>
-                    <Typography sx={{ fontSize: 14 }}>{c.content}</Typography>
-                    <Typography sx={{ fontSize: 11, color: "gray", mt: 0.5 }}>
-                      {new Date(c.createdAt).toLocaleTimeString()}
-                    </Typography>
-                  </Box>
-                </Box>
-              ))
+           comments.map((c: any) => (
+  <Box key={c._id} sx={{ display: "flex", gap: 1, mt: 2 }}>
+    {/* صورة صاحب الكومنت */}
+    <Avatar
+      src={c.commentCreator.photo}
+      sx={{ width: 35, height: 35, cursor: "pointer" }}
+      onClick={() => handleNavigate(c.commentCreator._id)}
+    />
+<Box sx={{display: "flex", justifyContent: "space-between", flex: 1, alignItems: "center"}}>
+
+
+    {/* محتوى الكومنت */}
+    <Box
+      sx={{
+        bgcolor: "#f0f2f5",
+        p: 1.2,
+        borderRadius: "12px",
+        flex: 1,
+      }}
+    >
+      <Typography
+        sx={{
+          fontWeight: "bold",
+          fontSize: 14,
+          cursor: "pointer",
+          "&:hover": { textDecoration: "underline" },
+        }}
+        onClick={() => handleNavigate(c.commentCreator._id)}
+      >
+        {c.commentCreator.name}
+      </Typography>
+      <Typography sx={{ fontSize: 14 }}>{c.content}</Typography>
+      <Typography sx={{ fontSize: 11, color: "gray", mt: 0.5 }}>
+        {new Date(c.createdAt).toLocaleTimeString()}
+      </Typography>
+    
+    </Box>
+<Box>
+  {/* زرار حذف الكومنت يظهر فقط لو المستخدم الحالي هو اللي كتبه */}
+    {userdata?._id === c.commentCreator._id && (
+      <>
+        <IconButton onClick={handleMenuOpen}>
+          {loadingDelete ? <CircularProgress size={20} /> : <MoreHorizIcon />}
+        </IconButton>
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleMenuClose}
+        >
+          <MenuItem onClick={() => handleDeletecomment(c._id)}>
+            Delete
+          </MenuItem>
+        </Menu>
+      </>
+    )}
+</Box>
+</Box>
+  </Box>
+))
+
             ) : (
               <Typography sx={{ color: "gray", textAlign: "center", mt: 2 }}>
                 No comments yet.

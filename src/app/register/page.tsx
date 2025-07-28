@@ -96,7 +96,7 @@ export default function Register() {
               label="Full Name"
               variant="outlined"
               required
-              InputLabelProps={{ style: { color: "#ddd" } }}
+              InputLabelProps={{ style: { color: "gray" } }}
               InputProps={{
                 style: {
                   backgroundColor: "rgba(255,255,255,0.9)",
@@ -114,7 +114,7 @@ export default function Register() {
               label="Email"
               variant="outlined"
               required
-              InputLabelProps={{ style: { color: "#ddd" } }}
+              InputLabelProps={{ style: { color: "gray" } }}
               InputProps={{
                 style: {
                   backgroundColor: "rgba(255,255,255,0.9)",
@@ -132,7 +132,7 @@ export default function Register() {
               label="Password"
               variant="outlined"
               required
-              InputLabelProps={{ style: { color: "#ddd" } }}
+              InputLabelProps={{ style: { color: "gray" } }}
               InputProps={{
                 style: {
                   backgroundColor: "rgba(255,255,255,0.9)",
@@ -150,7 +150,7 @@ export default function Register() {
               label="Confirm Password"
               variant="outlined"
               required
-              InputLabelProps={{ style: { color: "#ddd" } }}
+              InputLabelProps={{ style: { color: "gray" } }}
               InputProps={{
                 style: {
                   backgroundColor: "rgba(255,255,255,0.9)",
@@ -165,9 +165,8 @@ export default function Register() {
               type="date"
               name="dateOfBirth"
               id="dateOfBirth"
-              label="Date of Birth"
               variant="outlined"
-              InputLabelProps={{ shrink: true, style: { color: "#ddd" } }}
+              InputLabelProps={{ shrink: true, style: { color: "gray" } }}
               required
               InputProps={{
                 style: {
@@ -178,7 +177,7 @@ export default function Register() {
             />
 
             <FormControl variant="outlined" required>
-              <InputLabel id="gender-label" style={{ color: "#ddd" }}>Gender</InputLabel>
+              <InputLabel id="gender-label" style={{ color: "gray" }}>Gender</InputLabel>
               <Select
                 labelId="gender-label"
                 id="gender"
@@ -238,14 +237,7 @@ export default function Register() {
               </Link>
             </Typography>
 
-            <Typography>
-              <Link
-                href="/forgot-password"
-                style={{ color: "#6dd5ed", fontWeight: "bold" }}
-              >
-                Forgot password?
-              </Link>
-            </Typography>
+           
           </Box>
         </Paper>
       </Container>

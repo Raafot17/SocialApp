@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { jwtDecode } from "jwt-decode";
 import Posts from "../_component/Posts/posts";
 import Loading from "../loading";
-
 import {
   Box,
   Container,

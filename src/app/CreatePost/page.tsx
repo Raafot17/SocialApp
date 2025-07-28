@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import {
   Box,
   Avatar,
@@ -15,13 +15,24 @@ import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { store } from "@/lib/store";
+import { useDispatch, useSelector } from "react-redux";
+import { UserData } from "@/lib/postsSlice";
+
+
 
 export default function CreatePost() {
   const router = useRouter();
-
+const dispatch = useDispatch<typeof store.dispatch>();
+  const { userdata } = useSelector(
+    (state: ReturnType<typeof store.getState>) => state.posts
+  );
+  
+  
   const [postText, setPostText] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
+
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -60,6 +71,10 @@ export default function CreatePost() {
       setLoading(false);
     }
   }
+  useEffect(() => {
+    dispatch(UserData())
+  }, [])
+  
 
   return (
     <Box
@@ -84,7 +99,7 @@ export default function CreatePost() {
       {/* ✅ صورة البروفايل وكتابة البوست */}
       <Box sx={{ display: "flex", gap: 2 }}>
         <Avatar
-          src="https://i.pravatar.cc/300"
+          src={userdata?.photo}
           sx={{ width: 45, height: 45 }}
         />
         <TextField
@@ -102,7 +117,7 @@ export default function CreatePost() {
         />
       </Box>
 
-      {/* ✅ لو الصورة متختارة نعرضها */}
+      
       {selectedFile && (
         <Box sx={{ mt: 2, position: "relative" }}>
           <img

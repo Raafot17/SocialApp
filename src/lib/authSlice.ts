@@ -21,9 +21,8 @@ export const userLogin = createAsyncThunk(
         `https://linked-posts.routemisr.com/users/signin`,
         formData
       );
-      return res.data; // ده بسيط ومفيش مشكلة
+      return res.data; 
     } catch (err: any) {
-      // ✅ خليك متأكد بترجع بس String أو Object بسيط
       let errorMessage =
         err?.response?.data?.error || err?.message || "Login failed";
       return thunkAPI.rejectWithValue(errorMessage);
